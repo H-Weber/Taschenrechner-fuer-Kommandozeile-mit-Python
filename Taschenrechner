@@ -1,0 +1,33 @@
+from functools import reduce
+import operator
+user_a = input("clac : ")
+strfirstnum = []
+firstnum = []
+strsecoundnum = []
+secoundnum = []
+strnumbers = ["0","1","2","3","4","5","6","7","8","9"]
+numbers = [0,1,2,3,4,5,6,7,8,9]
+ops = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+    '/': operator.truediv,
+}
+op = ""
+for i in range (len(user_a)):
+    if len(op) >= 1:
+        if user_a[i] in strnumbers :
+            strsecoundnum.append(user_a[i])
+    else:
+        if user_a[i] in strnumbers :
+            strfirstnum.append(user_a[i])
+    if user_a[i] not in strnumbers :
+        op = op + user_a[i]
+for i in range (len(strfirstnum)):
+    firstnum.append(int(strfirstnum[i]))
+for i in range (len(strsecoundnum)):
+    secoundnum.append(int(strsecoundnum[i]))
+firstnum = reduce(lambda acc, n: acc * 10 + n, firstnum)
+secoundnum = reduce(lambda acc, n: acc * 10 + n, secoundnum)
+result = ops[op](firstnum, secoundnum)
+print(result)
