@@ -1,33 +1,44 @@
-from functools import reduce
-import operator
-user_a = input("clac : ")
-strfirstnum = []
-firstnum = []
-strsecoundnum = []
-secoundnum = []
-strnumbers = ["0","1","2","3","4","5","6","7","8","9"]
-numbers = [0,1,2,3,4,5,6,7,8,9]
-ops = {
-    '+': operator.add,
-    '-': operator.sub,
-    '*': operator.mul,
-    '/': operator.truediv,
-}
-op = ""
-for i in range (len(user_a)):
-    if len(op) >= 1:
-        if user_a[i] in strnumbers :
-            strsecoundnum.append(user_a[i])
+expression = input("enter mathematical Expression:").replace(" ","")
+def tokenize (arr):
+    final = []
+    temp = ""
+
+    for idx in range(len(arr)):
+        if arr[idx].isdigit() or arr[idx] == ".":
+            temp += arr[idx]
+        elif arr[idx] == "-" and (idx == 0 or arr[idx-1] in "-*/+"):
+            temp += arr[idx]
+        elif arr[idx] in "+*-/" and idx != 0:
+            final.append(temp)
+            temp = ""
+            final.append(arr[idx])
+    final.append(temp)    
+    return final
+expression = tokenize(expression)
+
+def solution(arr):
+    try:
+        for i in range(len(arr)):
+            if arr[i] == "*":
+                arr[i+1] = float(arr[i-1]) * float(arr[i+1])
+            elif arr[i] == "/":
+                arr[i+1] = float(arr[i-1]) / float(arr[i+1])
+        for i in range(len(arr)):
+            if arr[i] == "+":
+                arr[i+1] = float(arr[i-1]) + float(arr[i+1])
+            elif arr[i] == "-":
+                arr[i+1] = float(arr[i-1]) - float(arr[i+1])
+        return round(arr[-1],2)
+    except (ZeroDivisionError,ValueError,TypeError):
+        return "Error maybe you divided by 0 or entered a invalid Expression!"
+expression = solution(expression)
+print(expression)
+while True:
+    answer = input("Continue? [Yes/No]: ").lower()
+    if answer == "no":
+        break
     else:
-        if user_a[i] in strnumbers :
-            strfirstnum.append(user_a[i])
-    if user_a[i] not in strnumbers :
-        op = op + user_a[i]
-for i in range (len(strfirstnum)):
-    firstnum.append(int(strfirstnum[i]))
-for i in range (len(strsecoundnum)):
-    secoundnum.append(int(strsecoundnum[i]))
-firstnum = reduce(lambda acc, n: acc * 10 + n, firstnum)
-secoundnum = reduce(lambda acc, n: acc * 10 + n, secoundnum)
-result = ops[op](firstnum, secoundnum)
-print(result)
+        expression = input("enter mathematical Expression:").replace(" ","")
+        expression = tokenize(expression)
+        expression = solution(expression)
+        print(expression)
